@@ -71,320 +71,71 @@ export default class ProjectsSection
     {
         this.list = [
             {
-                name: 'Three.js Journey',
-                imageSources:
-                [
-                    './models/projects/threejsJourney/slideA.webp',
-                    './models/projects/threejsJourney/slideB.webp',
-                    './models/projects/threejsJourney/slideC.webp',
-                    './models/projects/threejsJourney/slideD.webp'
-                ],
-                floorTexture: this.resources.items.projectsThreejsJourneyFloorTexture,
-                link:
-                {
-                    href: 'https://threejs-journey.com?c=p3',
-                    x: - 4.8,
-                    y: - 3,
-                    halfExtents:
+                boards: [
                     {
-                        x: 3.2,
-                        y: 1.5
+                        name: 'IoT & Networking',
+                        description: 'Class Introduction',
+                        image: './models/projects/iotClass/slideA.png',
+                        href: 'https://classiotn.free.nf/'
+                    },
+                    {
+                        name: 'LSP LIBRARY',
+                        description: 'The LSP Library offers a diverse collection of books and information resources to support learning activities and foster an interest in reading, complemented by facilities such as computers and internet access.',
+                        image: './models/projects/lspLibrary/slideA.png',
+                        href: 'https://lsplibrary.free.nf/'
+                    },
+                    {
+                        name: 'MediStock',
+                        description: 'Medication inventory management application',
+                        image: './models/projects/medistock/slideA.png',
+                        href: 'https://managementobat-5zh5.vercel.app/'
                     }
-                },
-                distinctions:
-                [
-                    { type: 'fwa', x: 3.95, y: 4.15 }
                 ]
             },
             {
-                name: 'Chartogne Taillet',
-                imageSources:
-                [
-                    './models/projects/chartogne/slideA.jpg',
-                    './models/projects/chartogne/slideB.jpg',
-                    './models/projects/chartogne/slideC.jpg'
-                ],
-                floorTexture: this.resources.items.projectsChartogneFloorTexture,
-                link:
-                {
-                    href: 'https://chartogne-taillet.com',
-                    x: - 4.8,
-                    y: - 3.3,
-                    halfExtents:
+                boards: [
                     {
-                        x: 3.2,
-                        y: 1.5
+                        name: 'E-Commerce',
+                        description: 'Minimalist fashion e-commerce store',
+                        image: './models/projects/ecommerce/slideA.png',
+                        href: 'https://ecommers.infinityfree.io/'
+                    },
+                    {
+                        name: 'MikroTik NOC',
+                        description: 'A web application to monitor, manage, and diagnose MikroTik devices from a single dashboard.',
+                        image: './models/projects/mikrotikNoc/slideA.png',
+                        href: 'https://github.com/Masmas99/monitoring-mikrotik'
+                    },
+                    {
+                        name: 'Atnet',
+                        description: 'For the Atnet company',
+                        image: './models/projects/atnet/slideA.png',
+                        href: 'https://atnet.kesug.com/'
                     }
-                },
-                distinctions:
-                [
-                    { type: 'awwwards', x: 3.95, y: 4.15 },
-                    { type: 'fwa', x: 5.6, y: 4.15 },
-                    { type: 'cssda', x: 7.2, y: 4.15 }
                 ]
             },
             {
-                name: 'Bonhomme | 10 ans',
-                imageSources:
-                [
-                    './models/projects/bonhomme10ans/slideA.webp',
-                    './models/projects/bonhomme10ans/slideB.webp',
-                    './models/projects/bonhomme10ans/slideC.webp',
-                    './models/projects/bonhomme10ans/slideD.webp'
-                ],
-                floorTexture: this.resources.items.projectsBonhomme10ansFloorTexture,
-                link:
-                {
-                    href: 'https://anniversary.bonhommeparis.com/',
-                    x: - 4.8,
-                    y: - 2,
-                    halfExtents:
+                boards: [
                     {
-                        x: 3.2,
-                        y: 1.5
-                    }
-                },
-                distinctions:
-                [
-                    { type: 'awwwards', x: 3.95, y: 4.15 },
-                    { type: 'fwa', x: 5.6, y: 4.15 },
-                ]
-            },
-            {
-                name: 'Luni.app',
-                imageSources:
-                [
-                    './models/projects/luni/slideA.webp',
-                    './models/projects/luni/slideB.webp',
-                    './models/projects/luni/slideC.webp',
-                    './models/projects/luni/slideD.webp'
-                ],
-                floorTexture: this.resources.items.projectsLuniFloorTexture,
-                link:
-                {
-                    href: 'https://luni.app',
-                    x: - 4.8,
-                    y: - 3,
-                    halfExtents:
+                        name: 'Screen Monitoring System',
+                        description: 'A web application for monitoring and managing endpoint computers from a single dashboard.',
+                        image: './models/projects/screenMonitoring/slideA.png',
+                        href: 'https://github.com/Masmas99/monitoring_system_layar'
+                    },
                     {
-                        x: 3.2,
-                        y: 1.5
-                    }
-                },
-                distinctions:
-                [
-                    { type: 'awwwards', x: 3.95, y: 4.15 },
-                    { type: 'fwa', x: 5.6, y: 4.15 },
-                ]
-            },
-            {
-                name: 'Madbox',
-                imageSources:
-                [
-                    './models/projects/madbox/slideA.jpg',
-                    './models/projects/madbox/slideB.jpg',
-                    './models/projects/madbox/slideC.jpg'
-                ],
-                floorTexture: this.resources.items.projectsMadboxFloorTexture,
-                link:
-                {
-                    href: 'https://madbox.io',
-                    x: - 4.8,
-                    y: - 4,
-                    halfExtents:
+                        name: 'Coming Soon',
+                        description: 'Coming Soon',
+                        image: './models/projects/github/slideA.png',
+                        href: 'https://github.com/Masmas99'
+                    },
                     {
-                        x: 3.2,
-                        y: 1.5
+                        name: 'Coming Soon',
+                        description: 'Coming Soon',
+                        image: './models/projects/github/slideA.png',
+                        href: 'https://github.com/Masmas99'
                     }
-                },
-                distinctions:
-                [
-                    { type: 'awwwards', x: 3.95, y: 4.15 },
-                    { type: 'fwa', x: 5.6, y: 4.15 }
                 ]
-            },
-            {
-                name: 'Scout',
-                imageSources:
-                [
-                    './models/projects/scout/slideA.jpg',
-                    './models/projects/scout/slideB.jpg',
-                    './models/projects/scout/slideC.jpg'
-                ],
-                floorTexture: this.resources.items.projectsScoutFloorTexture,
-                link:
-                {
-                    href: 'https://fromscout.com',
-                    x: - 4.8,
-                    y: - 2,
-                    halfExtents:
-                    {
-                        x: 3.2,
-                        y: 1.5
-                    }
-                },
-                distinctions:
-                [
-                ]
-            },
-            // {
-            //     name: 'Zenly',
-            //     imageSources:
-            //     [
-            //         './models/projects/zenly/slideA.jpg',
-            //         './models/projects/zenly/slideB.jpg',
-            //         './models/projects/zenly/slideC.jpg'
-            //     ],
-            //     floorTexture: this.resources.items.projectsZenlyFloorTexture,
-            //     link:
-            //     {
-            //         href: 'https://zen.ly',
-            //         x: - 4.8,
-            //         y: - 4.2,
-            //         halfExtents:
-            //         {
-            //             x: 3.2,
-            //             y: 1.5
-            //         }
-            //     },
-            //     distinctions:
-            //     [
-            //         { type: 'awwwards', x: 3.95, y: 4.15 },
-            //         { type: 'fwa', x: 5.6, y: 4.15 },
-            //         { type: 'cssda', x: 7.2, y: 4.15 }
-            //     ]
-            // },
-            {
-                name: 'priorHoldings',
-                imageSources:
-                [
-                    './models/projects/priorHoldings/slideA.jpg',
-                    './models/projects/priorHoldings/slideB.jpg',
-                    './models/projects/priorHoldings/slideC.jpg'
-                ],
-                floorTexture: this.resources.items.projectsPriorHoldingsFloorTexture,
-                link:
-                {
-                    href: 'https://prior.co.jp/discover/',
-                    x: - 4.8,
-                    y: - 3,
-                    halfExtents:
-                    {
-                        x: 3.2,
-                        y: 1.5
-                    }
-                },
-                distinctions:
-                [
-                    { type: 'awwwards', x: 3.95, y: 4.15 },
-                    { type: 'fwa', x: 5.6, y: 4.15 },
-                    { type: 'cssda', x: 7.2, y: 4.15 }
-                ]
-            },
-            {
-                name: 'orano',
-                imageSources:
-                [
-                    './models/projects/orano/slideA.jpg',
-                    './models/projects/orano/slideB.jpg',
-                    './models/projects/orano/slideC.jpg'
-                ],
-                floorTexture: this.resources.items.projectsOranoFloorTexture,
-                link:
-                {
-                    href: 'https://orano.imm-g-prod.com/experience/innovation/en',
-                    x: - 4.8,
-                    y: - 3.4,
-                    halfExtents:
-                    {
-                        x: 3.2,
-                        y: 1.5
-                    }
-                },
-                distinctions:
-                [
-                    { type: 'awwwards', x: 3.95, y: 4.15 },
-                    { type: 'fwa', x: 5.6, y: 4.15 },
-                    { type: 'cssda', x: 7.2, y: 4.15 }
-                ]
-            },
-            {
-                name: 'citrixRedbull',
-                imageSources:
-                [
-                    './models/projects/citrixRedbull/slideA.jpg',
-                    './models/projects/citrixRedbull/slideB.jpg',
-                    './models/projects/citrixRedbull/slideC.jpg'
-                ],
-                floorTexture: this.resources.items.projectsCitrixRedbullFloorTexture,
-                link:
-                {
-                    href: 'https://thenewmobileworkforce.imm-g-prod.com/',
-                    x: - 4.8,
-                    y: - 4.4,
-                    halfExtents:
-                    {
-                        x: 3.2,
-                        y: 1.5
-                    }
-                },
-                distinctions:
-                [
-                    { type: 'awwwards', x: 3.95, y: 4.15 },
-                    { type: 'fwa', x: 5.6, y: 4.15 },
-                    { type: 'cssda', x: 7.2, y: 4.15 }
-                ]
-            },
-            // {
-            //     name: 'gleecChat',
-            //     imageSources:
-            //     [
-            //         './models/projects/gleecChat/slideA.jpg',
-            //         './models/projects/gleecChat/slideB.jpg',
-            //         './models/projects/gleecChat/slideC.jpg',
-            //         './models/projects/gleecChat/slideD.jpg'
-            //     ],
-            //     floorTexture: this.resources.items.projectsGleecChatFloorTexture,
-            //     link:
-            //     {
-            //         href: 'http://gleec.imm-g-prod.com',
-            //         x: - 4.8,
-            //         y: - 3.4,
-            //         halfExtents:
-            //         {
-            //             x: 3.2,
-            //             y: 1.5
-            //         }
-            //     },
-            //     distinctions:
-            //     [
-            //         { type: 'awwwards', x: 3.95, y: 4.15 },
-            //         { type: 'fwa', x: 5.6, y: 4.15 },
-            //         { type: 'cssda', x: 7.2, y: 4.15 }
-            //     ]
-            // },
-            // {
-            //     name: 'keppler',
-            //     imageSources:
-            //     [
-            //         './models/projects/keppler/slideA.jpg',
-            //         './models/projects/keppler/slideB.jpg',
-            //         './models/projects/keppler/slideC.jpg'
-            //     ],
-            //     floorTexture: this.resources.items.projectsKepplerFloorTexture,
-            //     link:
-            //     {
-            //         href: 'https://brunosimon.github.io/keppler/',
-            //         x: 2.75,
-            //         y: - 1.1,
-            //         halfExtents:
-            //         {
-            //             x: 3.2,
-            //             y: 1.5
-            //         }
-            //     },
-            //     distinctions: []
-            // }
+            }
         ]
     }
 

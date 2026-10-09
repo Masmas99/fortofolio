@@ -36,7 +36,7 @@ export default class Application
         this.setPasses()
         this.setWorld()
         this.setTitle()
-        this.setThreejsJourney()
+        // this.setThreejsJourney()
     }
 
     /**

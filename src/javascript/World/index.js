@@ -75,7 +75,7 @@ export default class World
         this.setTiles()
         this.setWalls()
         this.setSections()
-        this.setEasterEggs()
+        // this.setEasterEggs()
     }
 
     setReveal()
@@ -395,6 +395,17 @@ export default class World
             config: this.config
         })
         this.container.add(this.car.container)
+
+        window.folioTeleport = (_x, _y, _z = 2) =>
+        {
+            if(this.physics && this.physics.car && this.physics.car.chassis && this.physics.car.chassis.body)
+            {
+                this.physics.car.chassis.body.position.set(_x, _y, _z)
+                this.physics.car.chassis.body.velocity.set(0, 0, 0)
+                this.physics.car.chassis.body.angularVelocity.set(0, 0, 0)
+                this.physics.car.chassis.body.wakeUp()
+            }
+        }
     }
 
     setSections()
@@ -413,6 +424,7 @@ export default class World
             zones: this.zones,
             walls: this.walls,
             tiles: this.tiles,
+            sounds: this.sounds,
             debug: this.debugFolder
         }
 
@@ -479,8 +491,6 @@ export default class World
             ...options,
             x: 1.2,
             y: - 55
-            // x: 0,
-            // y: - 10
         })
         this.container.add(this.sections.information.container)
 
@@ -489,24 +499,11 @@ export default class World
             ...options,
             x: - 38,
             y: - 34
-            // x: - 15,
-            // y: - 4
         })
         this.container.add(this.sections.playground.container)
     }
 
     setEasterEggs()
     {
-        this.easterEggs = new EasterEggs({
-            resources: this.resources,
-            car: this.car,
-            walls: this.walls,
-            objects: this.objects,
-            materials: this.materials,
-            areas: this.areas,
-            config: this.config,
-            physics: this.physics
-        })
-        this.container.add(this.easterEggs.container)
     }
 }

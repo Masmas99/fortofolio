@@ -19,14 +19,120 @@ export default class InformationSection
         this.container.matrixAutoUpdate = false
 
         this.setStatic()
-        this.setBaguettes()
         this.setLinks()
-        this.setActivities()
         this.setTiles()
     }
 
     setStatic()
     {
+        const scene = this.resources.items.informationStaticBase.scene
+
+        // 1. Remove French flag and Eiffel Tower from base scene
+        for(let i = scene.children.length - 1; i >= 0; i--)
+        {
+            const child = scene.children[i]
+            const nameLower = (child.name || '').toLowerCase()
+
+            // Eiffel Tower: shadeGray, Cube.221/Cube221, or near [-6.17, 6.37]
+            const isEiffel = (
+                nameLower.includes('shadegray') ||
+                nameLower.includes('gray') ||
+                (child.name && child.name.includes('221')) ||
+                Math.hypot(child.position.x - (- 6.1709), child.position.y - 6.3713) < 1.8
+            )
+
+            // French flag: blue, white112, red005, or near [-3.24, 5.06] (excluding the pole at -4.23)
+            const isFrenchFlag = (
+                nameLower.includes('blue') ||
+                nameLower.includes('white112') ||
+                nameLower.includes('red005') ||
+                (Math.hypot(child.position.x - (- 3.24), child.position.y - 5.0606) < 1.5 && child.position.x > - 4.0)
+            )
+
+            if(isEiffel || isFrenchFlag)
+            {
+                scene.remove(child)
+            }
+        }
+
+        // 2. Add Monas (Monumen Nasional Indonesia)
+        const monasX = - 6.1709
+        const monasY = 6.3713
+
+        // Base platform 1 (Pelataran Bawah)
+        const mBase1 = new THREE.Mesh(new THREE.BoxGeometry(2.6, 2.6, 0.3))
+        mBase1.name = 'shadeWhite'
+        mBase1.position.set(monasX, monasY, 0.15)
+        scene.add(mBase1)
+
+        // Base platform 2 (Pelataran Tingkat)
+        const mBase2 = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2.2, 0.2))
+        mBase2.name = 'shadeWhite'
+        mBase2.position.set(monasX, monasY, 0.35)
+        scene.add(mBase2)
+
+        // Cawan Lower (Cawan / Saucer)
+        const mCawanLower = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.6, 0.25))
+        mCawanLower.name = 'shadeWhite'
+        mCawanLower.position.set(monasX, monasY, 0.55)
+        scene.add(mCawanLower)
+
+        // Cawan Saucer Rim
+        const mCawanRim = new THREE.Mesh(new THREE.BoxGeometry(2.0, 2.0, 0.15))
+        mCawanRim.name = 'shadeWhite'
+        mCawanRim.position.set(monasX, monasY, 0.725)
+        scene.add(mCawanRim)
+
+        // Obelisk shaft pedestal
+        const mShaftPedestal = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.2))
+        mShaftPedestal.name = 'shadeWhite'
+        mShaftPedestal.position.set(monasX, monasY, 0.875)
+        scene.add(mShaftPedestal)
+
+        // Obelisk shaft (tapered square column)
+        const shaftGeom = new THREE.CylinderGeometry(0.22, 0.42, 3.8, 4)
+        shaftGeom.rotateX(Math.PI * 0.5)
+        shaftGeom.rotateZ(Math.PI * 0.25)
+        const mShaft = new THREE.Mesh(shaftGeom)
+        mShaft.name = 'shadeWhite'
+        mShaft.position.set(monasX, monasY, 2.875)
+        scene.add(mShaft)
+
+        // Pelataran Puncak (Observation deck)
+        const mDeck = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.65, 0.12))
+        mDeck.name = 'shadeWhite'
+        mDeck.position.set(monasX, monasY, 4.835)
+        scene.add(mDeck)
+
+        // Dudukan Api (Flame pedestal)
+        const flamePedestalGeom = new THREE.CylinderGeometry(0.16, 0.20, 0.14, 8)
+        flamePedestalGeom.rotateX(Math.PI * 0.5)
+        const mFlamePedestal = new THREE.Mesh(flamePedestalGeom)
+        mFlamePedestal.name = 'shadeWhite'
+        mFlamePedestal.position.set(monasX, monasY, 4.965)
+        scene.add(mFlamePedestal)
+
+        // Lidah Api Kemerdekaan (Golden Flame)
+        const flameGeom = new THREE.ConeGeometry(0.18, 0.65, 8)
+        flameGeom.rotateX(Math.PI * 0.5)
+        const mFlame = new THREE.Mesh(flameGeom)
+        mFlame.name = 'shadeYellow'
+        mFlame.position.set(monasX, monasY, 5.34)
+        scene.add(mFlame)
+
+        // 3. Add Bendera Indonesia (Sang Saka Merah Putih)
+        // Top half: Merah (Red)
+        const flagRed = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.05, 0.5))
+        flagRed.name = 'shadeRed'
+        flagRed.position.set(- 3.23, 5.0606, 3.1)
+        scene.add(flagRed)
+
+        // Bottom half: Putih (White)
+        const flagWhite = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.05, 0.5))
+        flagWhite.name = 'shadeWhite'
+        flagWhite.position.set(- 3.23, 5.0606, 2.6)
+        scene.add(flagWhite)
+
         this.objects.add({
             base: this.resources.items.informationStaticBase.scene,
             collision: this.resources.items.informationStaticCollision.scene,
@@ -86,25 +192,68 @@ export default class InformationSection
         this.links.container.matrixAutoUpdate = false
         this.container.add(this.links.container)
 
+        // Helper to generate crisp text alpha maps for labels with title & handle/email
+        const createContactLabelTexture = (title, subtitle) =>
+        {
+            const canvas = document.createElement('canvas')
+            canvas.width = 1024
+            canvas.height = 256
+            const ctx = canvas.getContext('2d')
+            ctx.fillStyle = '#000000'
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            ctx.fillStyle = '#ffffff'
+            ctx.textAlign = 'left'
+            ctx.textBaseline = 'middle'
+
+            // Title (MAIL, GITHUB, LINKEDIN, CV)
+            ctx.font = 'italic 900 96px "Arial Black", Impact, sans-serif'
+            ctx.fillText(title.toUpperCase(), 15, 75)
+
+            // Subtitle (email, username, etc.)
+            if(subtitle)
+            {
+                let fontSize = 46
+                ctx.font = `italic 800 ${fontSize}px "Arial Black", Impact, sans-serif`
+                while(ctx.measureText(subtitle.toUpperCase()).width > canvas.width - 40 && fontSize > 20)
+                {
+                    fontSize -= 2
+                    ctx.font = `italic 800 ${fontSize}px "Arial Black", Impact, sans-serif`
+                }
+                ctx.fillText(subtitle.toUpperCase(), 15, 175)
+            }
+
+            const texture = new THREE.CanvasTexture(canvas)
+            texture.magFilter = THREE.LinearFilter
+            texture.minFilter = THREE.LinearFilter
+            return texture
+        }
+
         // Options
         this.links.options = [
             {
-                href: 'https://twitter.com/bruno_simon/',
-                labelTexture: this.resources.items.informationContactTwitterLabelTexture
+                href: './cv.pdf',
+                labelTexture: createContactLabelTexture('CV', 'DOWNLOAD / VIEW')
             },
             {
-                href: 'https://github.com/brunosimon/',
-                labelTexture: this.resources.items.informationContactGithubLabelTexture
+                href: 'https://github.com/Masmas99',
+                labelTexture: createContactLabelTexture('GITHUB', '@MASMAS99')
             },
             {
-                href: 'https://www.linkedin.com/in/simonbruno77/',
-                labelTexture: this.resources.items.informationContactLinkedinLabelTexture
+                href: 'https://www.linkedin.com/in/masmas-masa-b1568b38a/?isSelfProfile=true',
+                labelTexture: createContactLabelTexture('LINKEDIN', '@MASMAS-MASA')
             },
             {
-                href: 'mailto:simon.bruno.77@gmail.com',
-                labelTexture: this.resources.items.informationContactMailLabelTexture
+                href: 'mailto:masamasmas88@gmail.com',
+                labelTexture: createContactLabelTexture('MAIL', 'MASAMASMAS88@GMAIL.COM')
             }
         ]
+
+        // Clean up any existing map modal from DOM if present
+        const existingModal = document.getElementById('website-map-modal')
+        if(existingModal)
+        {
+            existingModal.remove()
+        }
 
         // Create each link
         let i = 0
@@ -123,7 +272,20 @@ export default class InformationSection
             })
             item.area.on('interact', () =>
             {
-                window.open(_option.href, '_blank')
+                if(_option.href && _option.href.startsWith('mailto:'))
+                {
+                    // Open Gmail Compose directly in new tab
+                    const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=masamasmas88@gmail.com'
+                    const win = window.open(gmailUrl, '_blank')
+                    if(!win || win.closed || typeof win.closed === 'undefined')
+                    {
+                        window.location.href = _option.href
+                    }
+                }
+                else
+                {
+                    window.open(_option.href, '_blank')
+                }
             })
 
             // Texture

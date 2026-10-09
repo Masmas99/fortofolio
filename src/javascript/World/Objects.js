@@ -90,6 +90,16 @@ export default class Objects
                 }
             },
 
+            // Textured / custom
+            {
+                regex: /^textured_?[0-9]{0,3}?/i,
+                apply: (_mesh, _options) =>
+                {
+                    const mesh = _options.duplicated ? _mesh.clone() : _mesh
+                    return mesh
+                }
+            },
+
             // Floor
             {
                 regex: /^floor_?[0-9]{0,3}?/i,
