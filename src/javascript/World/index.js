@@ -241,11 +241,6 @@ export default class World
 
             this.start()
 
-            if(window.quickTravel)
-            {
-                window.quickTravel.show()
-            }
-
             window.setTimeout(() =>
             {
                 this.reveal.go()
