@@ -22,6 +22,7 @@ import Controls from './Controls.js'
 import Sounds from './Sounds.js'
 import gsap from 'gsap'
 import EasterEggs from './EasterEggs.js'
+import MiniMap from './MiniMap.js'
 
 export default class World
 {
@@ -427,22 +428,57 @@ export default class World
         })
         this.container.add(this.car.container)
 
-        window.folioTeleport = (_x, _y, _z = 2.5) =>
+        this.teleportTo = (_x, _y, _z = 2.5) =>
         {
-            if(this.physics && this.physics.car && this.physics.car.chassis && this.physics.car.chassis.body)
+            const body = this.physics && this.physics.car && this.physics.car.chassis && this.physics.car.chassis.body
+            if(!body)
             {
-                this.physics.car.chassis.body.position.set(_x, _y, _z)
-                this.physics.car.chassis.body.velocity.set(0, 0, 0)
-                this.physics.car.chassis.body.angularVelocity.set(0, 0, 0)
-                this.physics.car.chassis.body.quaternion.set(0, 0, 0, 1)
-                this.physics.car.chassis.body.wakeUp()
-
-                if(this.sounds)
-                {
-                    this.sounds.play('reveal')
-                }
+                console.error('Cannot teleport: car physics body is unavailable.')
+                return false
             }
+
+            body.position.set(_x, _y, _z)
+            body.previousPosition.copy(body.position)
+            body.interpolatedPosition.copy(body.position)
+            body.velocity.set(0, 0, 0)
+            body.angularVelocity.set(0, 0, 0)
+            body.force.set(0, 0, 0)
+            body.torque.set(0, 0, 0)
+            body.quaternion.set(0, 0, 0, 1)
+            body.aabbNeedsUpdate = true
+            body.wakeUp()
+
+            this.physics.car.oldPosition.copy(body.position)
+            this.physics.car.unbrake()
+            for(const wheel of this.physics.car.vehicle.wheelInfos)
+            {
+                wheel.steering = 0
+            }
+
+            this.controls.actions.up = false
+            this.controls.actions.down = false
+            this.controls.actions.left = false
+            this.controls.actions.right = false
+            this.controls.actions.brake = false
+            this.controls.actions.boost = false
+
+            this.car.chassis.object.position.copy(body.position).add(this.car.chassis.offset)
+            this.car.chassis.object.quaternion.copy(body.quaternion)
+            this.car.chassis.oldPosition.copy(this.car.chassis.object.position)
+            this.car.position.copy(this.car.chassis.object.position)
+
+            this.camera.pan.reset()
+            this.camera.pan.value.x = 0
+            this.camera.pan.value.y = 0
+
+            if(this.sounds)
+            {
+                this.sounds.play('reveal')
+            }
+
+            return true
         }
+        window.folioTeleport = this.teleportTo
     }
 
     setSections()
@@ -531,6 +567,13 @@ export default class World
             y: - 34
         })
         this.container.add(this.sections.playground.container)
+
+        this.miniMap = new MiniMap({
+            time: this.time,
+            car: this.car,
+            sections: this.sections,
+            teleport: this.teleportTo
+        })
     }
 
     setEasterEggs()
