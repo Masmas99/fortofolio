@@ -239,6 +239,12 @@ export default class World
 
             gsap.to(this.startingScreen.startLabel.material, { opacity: 0, duration: 0.3, delay: 0.4 })
 
+            if(this.sounds)
+            {
+                this.sounds.playBGM()
+                this.sounds.showButton()
+            }
+
             this.start()
 
             window.setTimeout(() =>

@@ -22,6 +22,8 @@ export default class Sounds
         this.setMasterVolume()
         this.setMute()
         this.setEngine()
+        this.setBGM()
+        this.setSoundButton()
     }
 
     setSettings()
@@ -330,5 +332,94 @@ export default class Sounds
             // Save last play time
             item.lastTime = time
         }
+    }
+
+    setBGM()
+    {
+        this.bgm = new Howl({
+            src: ['./sounds/bgm.mp3'],
+            loop: true,
+            volume: 0.35,
+            autoplay: false,
+            html5: true
+        })
+
+        this.playBGM = () =>
+        {
+            if(this.bgm && !this.bgm.playing() && !this.muted)
+            {
+                this.bgm.play()
+                this.bgm.fade(0, 0.35, 1200)
+            }
+        }
+    }
+
+    setSoundButton()
+    {
+        this.$soundButton = document.createElement('button')
+        this.$soundButton.classList.add('sound-toggle-btn')
+        this.$soundButton.setAttribute('title', 'Toggle Sound & Music [M]')
+        this.$soundButton.setAttribute('aria-label', 'Toggle Sound & Music')
+
+        const updateButtonUI = () =>
+        {
+            if(this.muted)
+            {
+                this.$soundButton.classList.add('is-muted')
+                this.$soundButton.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" class="sound-icon" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="#ffffff"/>
+                        <line x1="23" y1="9" x2="17" y2="15" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+                        <line x1="17" y1="9" x2="23" y2="15" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+                    </svg>
+                `
+            }
+            else
+            {
+                this.$soundButton.classList.remove('is-muted')
+                this.$soundButton.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" class="sound-icon" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="#ffffff"/>
+                        <path d="M15.54 8.46C16.48 9.4 17 10.65 17 12C17 13.35 16.48 14.6 15.54 15.54" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+                        <path d="M19.07 4.93C20.94 6.8 22 9.33 22 12C22 14.67 20.94 17.2 19.07 19.07" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+                    </svg>
+                `
+            }
+        }
+
+        updateButtonUI()
+
+        this.$soundButton.addEventListener('click', (e) =>
+        {
+            e.stopPropagation()
+            this.muted = !this.muted
+            Howler.mute(this.muted)
+            updateButtonUI()
+
+            if(!this.muted && this.bgm && !this.bgm.playing())
+            {
+                this.playBGM()
+            }
+        })
+
+        // Sync button on keyboard M press
+        window.addEventListener('keydown', (_event) =>
+        {
+            if(_event.key === 'm' || _event.key === 'M')
+            {
+                updateButtonUI()
+                if(!this.muted && this.bgm && !this.bgm.playing())
+                {
+                    this.playBGM()
+                }
+            }
+        })
+
+        this.showButton = () =>
+        {
+            this.$soundButton.classList.add('is-visible')
+        }
+
+        document.body.appendChild(this.$soundButton)
     }
 }
