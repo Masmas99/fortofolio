@@ -241,6 +241,11 @@ export default class World
 
             this.start()
 
+            if(window.quickTravel)
+            {
+                window.quickTravel.show()
+            }
+
             window.setTimeout(() =>
             {
                 this.reveal.go()
@@ -396,14 +401,20 @@ export default class World
         })
         this.container.add(this.car.container)
 
-        window.folioTeleport = (_x, _y, _z = 2) =>
+        window.folioTeleport = (_x, _y, _z = 2.5) =>
         {
             if(this.physics && this.physics.car && this.physics.car.chassis && this.physics.car.chassis.body)
             {
                 this.physics.car.chassis.body.position.set(_x, _y, _z)
                 this.physics.car.chassis.body.velocity.set(0, 0, 0)
                 this.physics.car.chassis.body.angularVelocity.set(0, 0, 0)
+                this.physics.car.chassis.body.quaternion.set(0, 0, 0, 1)
                 this.physics.car.chassis.body.wakeUp()
+
+                if(this.sounds)
+                {
+                    this.sounds.play('reveal')
+                }
             }
         }
     }
@@ -420,6 +431,7 @@ export default class World
             camera: this.camera,
             passes: this.passes,
             objects: this.objects,
+            physics: this.physics,
             areas: this.areas,
             zones: this.zones,
             walls: this.walls,
@@ -427,14 +439,6 @@ export default class World
             sounds: this.sounds,
             debug: this.debugFolder
         }
-
-        // // Distinction A
-        // this.sections.distinctionA = new DistinctionASection({
-        //     ...options,
-        //     x: 0,
-        //     y: - 15
-        // })
-        // this.container.add(this.sections.distinctionA.container)
 
         // // Distinction B
         // this.sections.distinctionB = new DistinctionBSection({
