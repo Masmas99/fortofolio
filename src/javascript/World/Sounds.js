@@ -343,14 +343,29 @@ export default class Sounds
             autoplay: false,
             html5: true
         })
+        this.bgmLoadError = false
+        this.bgm.on('loaderror', (_id, _error) =>
+        {
+            this.bgmLoadError = true
+            console.error('Failed to load background music:', _error)
+        })
 
         this.playBGM = () =>
         {
-            if(this.bgm && !this.bgm.playing() && !this.muted)
+            if(this.bgm && this.bgm.state() === 'loaded' && !this.bgm.playing() && !this.muted)
             {
                 this.bgm.play()
                 this.bgm.fade(0, 0.35, 1200)
             }
+        }
+
+        if(this.bgm.state() === 'loaded')
+        {
+            this.playBGM()
+        }
+        else
+        {
+            this.bgm.once('load', this.playBGM)
         }
     }
 

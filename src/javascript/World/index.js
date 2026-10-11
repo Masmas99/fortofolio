@@ -221,14 +221,39 @@ export default class World
         // Ready
         this.resources.on('ready', () =>
         {
-            window.requestAnimationFrame(() =>
+            const showStartScreen = () =>
             {
-                this.startingScreen.area.activate()
+                window.requestAnimationFrame(() =>
+                {
+                    this.startingScreen.area.activate()
 
-                gsap.to(this.startingScreen.area.floorBorder.material.uniforms.uAlpha, { value: 0.3, duration: 0.3 })
-                gsap.to(this.startingScreen.loadingLabel.material, { opacity: 0, duration: 0.3 })
-                gsap.to(this.startingScreen.startLabel.material, { opacity: 1, duration: 0.3, delay: 0.3 })
-            })
+                    gsap.to(this.startingScreen.area.floorBorder.material.uniforms.uAlpha, { value: 0.3, duration: 0.3 })
+                    gsap.to(this.startingScreen.loadingLabel.material, { opacity: 0, duration: 0.3 })
+                    gsap.to(this.startingScreen.startLabel.material, { opacity: 1, duration: 0.3, delay: 0.3 })
+                })
+            }
+
+            const bgm = this.sounds.bgm
+            if(bgm.state() === 'loaded' || this.sounds.bgmLoadError)
+            {
+                showStartScreen()
+            }
+            else
+            {
+                const onBgmLoad = () =>
+                {
+                    bgm.off('loaderror', onBgmLoadError)
+                    showStartScreen()
+                }
+                const onBgmLoadError = () =>
+                {
+                    bgm.off('load', onBgmLoad)
+                    showStartScreen()
+                }
+
+                bgm.once('load', onBgmLoad)
+                bgm.once('loaderror', onBgmLoadError)
+            }
         })
 
         // On interact, reveal
