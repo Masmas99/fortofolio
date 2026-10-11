@@ -65,33 +65,16 @@ export default class MiniMap
 
         this.$canvas = document.createElement('canvas')
         this.$canvas.className = 'mini-map-canvas'
-        this.$canvas.setAttribute('aria-label', 'Peta area. Klik penanda untuk teleport.')
+        this.$canvas.setAttribute('aria-label', 'Peta area. Klik lokasi untuk memindahkan mobil.')
         this.$canvas.setAttribute('role', 'img')
 
         this.$hint = document.createElement('p')
         this.$hint.className = 'mini-map-hint'
-        this.$hint.textContent = 'Pilih area di peta atau daftar untuk berpindah'
-
-        this.$destinations = document.createElement('nav')
-        this.$destinations.className = 'mini-map-destinations'
-        this.$destinations.setAttribute('aria-label', 'Pilih tujuan')
-
-        for(const landmark of this.landmarks)
-        {
-            const button = document.createElement('button')
-            button.className = 'mini-map-destination'
-            button.type = 'button'
-            button.innerHTML = `<span class="mini-map-destination-dot"></span><span>${landmark.name}</span><span class="mini-map-destination-arrow">↗</span>`
-            button.addEventListener('click', () =>
-            {
-                this.goTo(landmark)
-            })
-            this.$destinations.append(button)
-        }
+        this.$hint.textContent = 'Klik lokasi di peta untuk memindahkan mobil ke sana'
 
         titleWrap.append(eyebrow, title)
         header.append(titleWrap, this.$close)
-        this.$panel.append(header, this.$canvas, this.$hint, this.$destinations)
+        this.$panel.append(header, this.$canvas, this.$hint)
         document.body.append(this.$toggle, this.$panel)
 
         this.$toggle.addEventListener('click', () =>
@@ -105,7 +88,7 @@ export default class MiniMap
         })
         this.$canvas.addEventListener('click', (_event) =>
         {
-            this.selectNearestLandmark(_event)
+            this.teleportToPoint(_event)
         })
     }
 
@@ -124,34 +107,24 @@ export default class MiniMap
         }
     }
 
-    goTo(_landmark)
+    teleportToPoint(_event)
     {
-        if(!this.teleport(_landmark.x, _landmark.y))
+        const rect = this.$canvas.getBoundingClientRect()
+        const padding = { left: 42, right: 18, top: 18, bottom: 18 }
+        const mapWidth = rect.width - padding.left - padding.right
+        const mapHeight = rect.height - padding.top - padding.bottom
+        const pointX = Math.max(0, Math.min(1, (_event.clientX - rect.left - padding.left) / mapWidth))
+        const pointY = Math.max(0, Math.min(1, (_event.clientY - rect.top - padding.top) / mapHeight))
+        const worldX = this.bounds.minX + pointX * (this.bounds.maxX - this.bounds.minX)
+        const worldY = this.bounds.maxY - pointY * (this.bounds.maxY - this.bounds.minY)
+
+        if(!this.teleport(worldX, worldY))
         {
             return
         }
 
         this.setOpen(false)
         this.$toggle.focus()
-    }
-
-    selectNearestLandmark(_event)
-    {
-        const rect = this.$canvas.getBoundingClientRect()
-        const x = _event.clientX - rect.left
-        const y = _event.clientY - rect.top
-        const nearest = this.landmarks
-            .map((_landmark) =>
-            {
-                const point = this.toPoint(_landmark.x, _landmark.y, rect.width, rect.height)
-                return { landmark: _landmark, distance: Math.hypot(point.x - x, point.y - y) }
-            })
-            .sort((_a, _b) => _a.distance - _b.distance)[0]
-
-        if(nearest && nearest.distance <= 24)
-        {
-            this.goTo(nearest.landmark)
-        }
     }
 
     toPoint(_x, _y, _width, _height)
@@ -271,7 +244,7 @@ export default class MiniMap
         const carPoint = this.toPoint(carPosition.x, carPosition.y, width, height)
         context.save()
         context.translate(carPoint.x, carPoint.y)
-        context.rotate(-this.car.chassis.object.rotation.z)
+        context.rotate(Math.PI / 2 - this.car.chassis.object.rotation.z)
         context.shadowColor = 'rgba(155, 61, 11, 0.45)'
         context.shadowBlur = 8
         context.fillStyle = '#fff2d8'
