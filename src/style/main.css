@@ -331,3 +331,21 @@ html
     pointer-events: none;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
+
+@media screen and (orientation: landscape) and (max-height: 500px)
+{
+    .sound-toggle-btn
+    {
+        top: max(12px, env(safe-area-inset-top));
+        right: auto;
+        left: max(12px, env(safe-area-inset-left));
+        width: 42px;
+        height: 42px;
+    }
+
+    .sound-icon
+    {
+        width: 20px;
+        height: 20px;
+    }
+}
