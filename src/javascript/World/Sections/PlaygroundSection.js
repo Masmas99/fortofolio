@@ -387,35 +387,94 @@ export default class PlaygroundSection
             color: 0xffffff,
             wireframe: true,
             transparent: true,
-            opacity: 0.55
+            opacity: 0.55,
+            side: THREE.DoubleSide
         })
+        const goalNet = new THREE.Object3D()
+        goalNet.position.set(this.soccer.goal.x, this.soccer.goal.y, 0)
+
+        const createNetPanel = (topLeft, topRight, bottomLeft, bottomRight, widthSegments, heightSegments) =>
+        {
+            const positions = []
+            const indices = []
+
+            for(let y = 0; y <= heightSegments; y++)
+            {
+                const v = y / heightSegments
+                const left = new THREE.Vector3().lerpVectors(topLeft, bottomLeft, v)
+                const right = new THREE.Vector3().lerpVectors(topRight, bottomRight, v)
+
+                for(let x = 0; x <= widthSegments; x++)
+                {
+                    const point = new THREE.Vector3().lerpVectors(left, right, x / widthSegments)
+                    positions.push(point.x, point.y, point.z)
+                }
+            }
+
+            for(let y = 0; y < heightSegments; y++)
+            {
+                for(let x = 0; x < widthSegments; x++)
+                {
+                    const a = y * (widthSegments + 1) + x
+                    const b = a + 1
+                    const c = a + widthSegments + 1
+                    const d = c + 1
+                    indices.push(a, b, d, a, d, c)
+                }
+            }
+
+            const geometry = new THREE.BufferGeometry()
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+            geometry.setIndex(indices)
+            geometry.computeVertexNormals()
+
+            return new THREE.Mesh(geometry, netMaterial)
+        }
 
         // Roof net
-        const roofNet = new THREE.Mesh(new THREE.PlaneGeometry(depth * 0.7, width, 6, 12), netMaterial)
-        roofNet.position.set(- depth * 0.35, 0, height * 0.95)
-        roofNet.rotation.y = Math.atan2(height * 0.1, depth * 0.7)
-        this.container.add(roofNet)
-        roofNet.position.add(new THREE.Vector3(this.soccer.goal.x, this.soccer.goal.y, 0))
+        const roofNet = createNetPanel(
+            new THREE.Vector3(0, - width * 0.5, height),
+            new THREE.Vector3(0, width * 0.5, height),
+            new THREE.Vector3(- depth * 0.7, - width * 0.5, height * 0.9),
+            new THREE.Vector3(- depth * 0.7, width * 0.5, height * 0.9),
+            12,
+            6
+        )
+        goalNet.add(roofNet)
 
         // Back net
-        const backNet = new THREE.Mesh(new THREE.PlaneGeometry(width, diagLength, 12, 8), netMaterial)
-        backNet.position.set(this.soccer.goal.x - depth * 0.85, this.soccer.goal.y, height * 0.45)
-        backNet.rotation.z = Math.PI * 0.5
-        backNet.rotation.y = - (Math.PI * 0.5 - diagAngle)
-        this.container.add(backNet)
+        const backNet = createNetPanel(
+            new THREE.Vector3(- depth * 0.7, - width * 0.5, height * 0.9),
+            new THREE.Vector3(- depth * 0.7, width * 0.5, height * 0.9),
+            new THREE.Vector3(- depth, - width * 0.5, 0),
+            new THREE.Vector3(- depth, width * 0.5, 0),
+            12,
+            8
+        )
+        goalNet.add(backNet)
 
         // Left side net
-        const sideNetGeo = new THREE.PlaneGeometry(depth, height, 8, 8)
-        const leftSideNet = new THREE.Mesh(sideNetGeo, netMaterial)
-        leftSideNet.position.set(this.soccer.goal.x - depth * 0.5, this.soccer.goal.y - width * 0.5, height * 0.5)
-        leftSideNet.rotation.y = Math.PI * 0.5
-        this.container.add(leftSideNet)
+        const leftSideNet = createNetPanel(
+            new THREE.Vector3(0, - width * 0.5, height),
+            new THREE.Vector3(- depth * 0.7, - width * 0.5, height * 0.9),
+            new THREE.Vector3(0, - width * 0.5, 0),
+            new THREE.Vector3(- depth, - width * 0.5, 0),
+            8,
+            8
+        )
+        goalNet.add(leftSideNet)
 
         // Right side net
-        const rightSideNet = new THREE.Mesh(sideNetGeo, netMaterial)
-        rightSideNet.position.set(this.soccer.goal.x - depth * 0.5, this.soccer.goal.y + width * 0.5, height * 0.5)
-        rightSideNet.rotation.y = Math.PI * 0.5
-        this.container.add(rightSideNet)
+        const rightSideNet = createNetPanel(
+            new THREE.Vector3(0, width * 0.5, height),
+            new THREE.Vector3(- depth * 0.7, width * 0.5, height * 0.9),
+            new THREE.Vector3(0, width * 0.5, 0),
+            new THREE.Vector3(- depth, width * 0.5, 0),
+            8,
+            8
+        )
+        goalNet.add(rightSideNet)
+        this.container.add(goalNet)
 
         // Collision shapes (Cannon.Box parsed via mesh.name = 'box' and mesh.scale)
         // Left post collider
